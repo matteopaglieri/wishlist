@@ -1,0 +1,1784 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta name="wishlist-mode" content="public">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wishlist</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: catalogo a vetrina. Testata con riepilogo, filtri fissi in alto, una sezione per tipologia con griglia di schede prodotto. */
+:root {
+  --bg: #F4F4F1;
+  --surface: #FFFFFF;
+  --tile: #E7E8E3;
+  --ink: #141518;
+  --muted: #676A70;
+  --line: #DADBD5;
+  --accent: #2F3FD4;
+  --danger: #B3222E;
+  --c-tech: #3A5AD8;
+  --c-moda: #BE4F78;
+  --c-nerd: #C47E16;
+  --c-print3d: #22907A;
+  --c-design: #8A6036;
+  --p-rosso: #C8372D; --p-arancio: #D9672A; --p-giallo: #B98F0E; --p-verde: #4C9A2A; --p-acqua: #1E95A1;
+  --p-azzurro: #2E86DE; --p-blu: #3346C9; --p-viola: #7A4FD0; --p-rosa: #D24C9C; --p-grigio: #6E737A;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r: 6px;
+  --shadow: 0 30px 80px -24px rgba(10, 12, 20, .35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111214; --surface: #1A1B1F; --tile: #212227; --ink: #ECECE7; --muted: #9B9DA3;
+    --line: #2D2F34; --accent: #8E9AFF; --danger: #FF7D86;
+    --c-tech: #7F97FF; --c-moda: #EC8AAE; --c-nerd: #F0B458; --c-print3d: #5ECCAF; --c-design: #CB9C6E;
+    --p-rosso: #FF7A6E; --p-arancio: #FF9E64; --p-giallo: #F2CF55; --p-verde: #8CD267; --p-acqua: #5FD3DC;
+    --p-azzurro: #74B8FF; --p-blu: #8E9BFF; --p-viola: #B79BFF; --p-rosa: #FF8CCB; --p-grigio: #A9AEB5;
+    --shadow: 0 30px 80px -24px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111214; --surface: #1A1B1F; --tile: #212227; --ink: #ECECE7; --muted: #9B9DA3;
+  --line: #2D2F34; --accent: #8E9AFF; --danger: #FF7D86;
+  --c-tech: #7F97FF; --c-moda: #EC8AAE; --c-nerd: #F0B458; --c-print3d: #5ECCAF; --c-design: #CB9C6E;
+  --p-rosso: #FF7A6E; --p-arancio: #FF9E64; --p-giallo: #F2CF55; --p-verde: #8CD267; --p-acqua: #5FD3DC;
+  --p-azzurro: #74B8FF; --p-blu: #8E9BFF; --p-viola: #B79BFF; --p-rosa: #FF8CCB; --p-grigio: #A9AEB5;
+  --shadow: 0 30px 80px -24px rgba(0, 0, 0, .7);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+body.locked { overflow: hidden; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap {
+  max-width: 1240px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Testata */
+.masthead .wrap { padding-block: 44px 28px; display: grid; gap: 32px; }
+.mast-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.eyebrow {
+  margin: 0 0 10px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.wordmark {
+  margin: 0; font-family: var(--f-display); font-stretch: 125%; font-weight: 700;
+  font-size: clamp(44px, 8vw, 92px); line-height: .9; letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.lede { margin: 14px 0 0; color: var(--muted); max-width: 46ch; }
+
+.stats { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.stats > div { padding: 14px 16px 0 0; min-width: 0; }
+.stats > div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+.stats dt { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.stats dd {
+  margin: 6px 0 0; font-family: var(--f-display); font-stretch: 115%; font-weight: 600;
+  font-size: clamp(24px, 3.4vw, 36px); line-height: 1; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 18px; }
+  .stats > div:nth-child(3) { padding-left: 0; border-left: 0; }
+}
+
+.dist-block { display: grid; gap: 12px; }
+.dist { display: flex; gap: 3px; height: 8px; border-radius: 99px; overflow: hidden; background: var(--tile); }
+.dist span { display: block; min-width: 3px; background: var(--c); }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 13px; }
+.legend li { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.legend b { font-family: var(--f-mono); font-weight: 400; font-size: 12px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: var(--c); flex: none; }
+
+/* Pulsanti */
+.btn-primary, .btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px; border-radius: 99px;
+  padding: 11px 20px; font-size: 14px; font-weight: 500; cursor: pointer; line-height: 1.1;
+  transition: background-color .15s, border-color .15s, color .15s, opacity .15s;
+}
+.btn-primary { background: var(--ink); color: var(--bg); border: 1px solid var(--ink); }
+.btn-primary:hover { opacity: .86; }
+.btn-primary:disabled { opacity: .5; cursor: progress; }
+.btn-ghost { background: transparent; border: 1px solid var(--line); }
+.btn-ghost:hover { border-color: var(--ink); }
+.btn-ghost.danger { color: var(--danger); }
+.btn-ghost.danger.armed { background: var(--danger); border-color: var(--danger); color: var(--surface); }
+.btn-primary .plus { font-size: 18px; line-height: 0; font-weight: 400; }
+
+/* Barra filtri */
+.toolbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.toolbar .wrap { padding-block: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; }
+.chips {
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1 1 420px;
+  margin-block: -4px; padding-block: 4px;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; border-radius: 99px;
+  padding: 7px 13px; font-size: 13px; white-space: nowrap;
+  transition: background-color .15s, border-color .15s, color .15s;
+}
+.chip:hover { border-color: var(--ink); }
+.chip .n { font-family: var(--f-mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .65; }
+.tb-right { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+.tb-right select {
+  border: 1px solid var(--line); background: var(--bg); border-radius: 99px;
+  padding: 6px 28px 6px 12px; font-size: 13px; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 52%, calc(100% - 11px) 52%;
+  background-size: 4px 4px, 4px 4px; background-repeat: no-repeat;
+}
+.toggle { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; color: var(--muted); white-space: nowrap; }
+.toggle input { accent-color: var(--ink); width: 15px; height: 15px; margin: 0; }
+
+/* Avvisi */
+main.wrap { padding-block: 8px 96px; display: grid; gap: 8px; scroll-margin-top: 72px; }
+#sections { display: grid; gap: 36px; }
+.notice {
+  margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
+  border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; font-size: 14px; color: var(--muted);
+}
+.notice p { margin: 0; max-width: 70ch; }
+.notice strong { color: var(--ink); font-weight: 600; }
+.notice:empty { display: none; }
+
+/* Sezioni */
+.cat { display: grid; gap: 22px; padding-top: 24px; }
+.cat-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; border-top: 1px solid var(--line); padding-top: 16px; }
+.cat-head h2 {
+  margin: 0; display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--f-display); font-stretch: 120%; font-weight: 650;
+  font-size: clamp(22px, 2.8vw, 30px); letter-spacing: -.02em; line-height: 1.1;
+}
+.cat-head h2 .sw { width: 12px; height: 12px; border-radius: 3px; }
+.cat-meta { margin: 0; display: flex; gap: 16px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 32px 20px; }
+@media (max-width: 560px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 12px; } }
+
+.card { position: relative; min-width: 0; }
+.card-btn {
+  display: flex; flex-direction: column; gap: 12px; width: 100%; padding: 0; margin: 0;
+  background: none; border: 0; text-align: left; cursor: pointer; border-radius: var(--r);
+}
+.card-btn:focus-visible { outline-offset: 4px; }
+.tile {
+  position: relative; aspect-ratio: 4 / 5; width: 100%; max-width: 100%;
+  border-radius: var(--r); overflow: hidden; display: grid; place-items: center;
+  background: color-mix(in oklab, var(--c) 10%, var(--tile));
+}
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.card-btn:hover .tile img { transform: scale(1.035); }
+.mark {
+  padding: 18px; text-align: center; text-transform: uppercase;
+  font-family: var(--f-display); font-stretch: 125%; font-weight: 750;
+  font-size: clamp(19px, 2.3vw, 26px); line-height: .95; letter-spacing: -.01em;
+  color: color-mix(in oklab, var(--c) 52%, var(--tile));
+  overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  transition: transform .6s cubic-bezier(.2, .7, .2, 1);
+}
+.card-btn:hover .mark { transform: scale(1.04); }
+.prio {
+  position: absolute; top: 10px; left: 10px; display: flex; gap: 3px; padding: 6px 7px; border-radius: 99px;
+  background: color-mix(in oklab, var(--surface) 85%, transparent);
+}
+.prio i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+.prio i.on { background: var(--ink); }
+.prio.p3 i.on { background: var(--accent); }
+.tags { position: absolute; left: 10px; bottom: 10px; right: 10px; display: flex; flex-wrap: wrap; gap: 4px; }
+.tag {
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 99px; background: var(--surface); color: var(--muted);
+}
+.tag.owned { background: var(--ink); color: var(--bg); }
+.go {
+  position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; text-decoration: none; font-size: 16px;
+  background: var(--surface); color: var(--ink); transition: opacity .2s, transform .2s;
+}
+.go:hover { transform: translate(1px, -1px); }
+@media (hover: hover) {
+  .go { opacity: 0; }
+  .card:hover .go, .go:focus-visible { opacity: 1; }
+}
+.meta { display: grid; gap: 2px; min-width: 0; padding-inline: 2px; }
+.brand { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); overflow-wrap: anywhere; }
+.name { font-size: 15px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+.price { margin-top: 5px; font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.price.none { color: var(--muted); }
+.is-owned .tile img, .is-owned .mark { filter: grayscale(1); opacity: .5; }
+.is-owned .name, .is-owned .price { color: var(--muted); }
+
+.slot {
+  aspect-ratio: 4 / 5; width: 100%; max-width: 100%; border: 1.5px dashed var(--line); border-radius: var(--r);
+  background: transparent; display: grid; place-content: center; justify-items: center; gap: 6px;
+  color: var(--muted); font-size: 13px; cursor: pointer; padding: 16px; text-align: center;
+  transition: border-color .15s, color .15s;
+}
+.slot .big { font-size: 26px; font-weight: 300; line-height: 1; }
+.slot:hover { border-color: var(--c); color: var(--ink); }
+.ghost-tile { aspect-ratio: 4 / 5; border-radius: var(--r); background: var(--tile); animation: pulse 1.6s ease-in-out infinite; }
+.ghost-line { height: 10px; border-radius: 3px; background: var(--tile); margin-top: 12px; width: 70%; }
+@keyframes pulse { 50% { opacity: .55; } }
+.empty-line { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* Scheda di modifica */
+.overlay {
+  position: fixed; inset: 0; z-index: 50; overflow-y: auto; display: grid; place-items: center;
+  background: color-mix(in oklab, #0B0C10 46%, transparent);
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.sheet {
+  width: min(780px, 100%); background: var(--surface); border-radius: 12px; box-shadow: var(--shadow);
+  animation: rise .28s cubic-bezier(.2, .7, .2, 1);
+}
+@keyframes rise { from { transform: translateY(12px); opacity: 0; } }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px 0 24px; }
+.sheet-head h2 { margin: 0; font-family: var(--f-display); font-stretch: 115%; font-weight: 650; font-size: 20px; letter-spacing: -.01em; overflow-wrap: anywhere; min-width: 0; }
+.icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 0; background: transparent; cursor: pointer; font-size: 22px; line-height: 1; color: var(--muted); flex: none; }
+.icon-btn:hover { background: var(--bg); color: var(--ink); }
+#ed-form { padding: 20px 24px 24px; }
+#ed-fields { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 24px; }
+@media (max-width: 640px) { #ed-fields { grid-template-columns: minmax(0, 1fr); } }
+.drop {
+  position: relative; aspect-ratio: 4 / 5; width: 100%; max-width: 100%; border-radius: var(--r); overflow: hidden;
+  background: color-mix(in oklab, var(--c, var(--muted)) 9%, var(--tile));
+  display: grid; place-items: center; text-align: center; cursor: pointer; outline-offset: 3px;
+}
+@media (max-width: 640px) { .drop { aspect-ratio: 16 / 10; } }
+.drop.dragging { outline: 2px dashed var(--accent); }
+.drop img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.drop-empty { padding: 20px; font-size: 13px; color: var(--muted); line-height: 1.45; }
+.drop-empty u { text-decoration-color: var(--line); text-underline-offset: 3px; color: var(--ink); }
+.drop.busy::after {
+  content: "Caricamento…"; position: absolute; inset: 0; display: grid; place-items: center;
+  background: color-mix(in oklab, var(--surface) 70%, transparent); font-size: 13px; color: var(--ink);
+}
+.drop-remove {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  border: 0; border-radius: 99px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+  background: var(--surface); color: var(--ink);
+}
+.fields { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.row2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 420px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > span, .group-label { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.field input, .field textarea {
+  width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: var(--r);
+  padding: 9px 11px; font-size: 15px; transition: border-color .15s, box-shadow .15s;
+}
+.field textarea { resize: vertical; min-height: 64px; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+.seg label {
+  display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border: 1px solid var(--line);
+  border-radius: 99px; font-size: 13px; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s;
+}
+.seg label:hover { border-color: var(--ink); }
+.seg input:checked + label { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; cursor: pointer; }
+.check input { accent-color: var(--ink); width: 16px; height: 16px; margin: 0; }
+.shop-link { font-size: 14px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+
+/* Vista in sola lettura */
+#ed-fields:disabled .field input, #ed-fields:disabled .field textarea { border-color: transparent; background: transparent; padding-inline: 0; resize: none; opacity: 1; color: var(--ink); -webkit-text-fill-color: var(--ink); }
+#ed-fields:disabled .seg input:not(:checked) + label { display: none; }
+#ed-fields:disabled .seg label { cursor: default; }
+#ed-fields:disabled .check { display: none; }
+#ed-fields:disabled .drop { cursor: default; }
+
+.sheet-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+.sheet-foot .spacer { flex: 1; }
+.form-error { margin: 12px 0 0; color: var(--danger); font-size: 14px; }
+.form-error:empty { display: none; }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  transform: translate(-50%, 12px); opacity: 0; pointer-events: none;
+  background: var(--ink); color: var(--bg); border-radius: 99px; padding: 10px 18px; font-size: 14px;
+  transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* Sezioni personalizzate */
+.chip-add { border-style: dashed; color: var(--muted); }
+.chip-add:hover { color: var(--ink); }
+.seg-add {
+  padding: 6px 12px; border: 1px dashed var(--line); border-radius: 99px; background: transparent;
+  font-size: 13px; color: var(--muted); cursor: pointer;
+}
+.seg-add:hover { border-color: var(--ink); color: var(--ink); }
+.sec-del {
+  border: 0; background: none; padding: 2px 0; cursor: pointer; font-size: 12px; color: var(--muted);
+  text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px;
+}
+.sec-del:hover, .sec-del.armed { color: var(--danger); }
+.cat-meta { align-items: baseline; }
+#sec-overlay { z-index: 55; }
+.sheet-sm { width: min(460px, 100%); }
+#sec-form { padding: 20px 24px 24px; display: grid; gap: 18px; }
+#sec-form .sheet-foot { margin-top: 4px; }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatches input { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
+.swatches label {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--c); cursor: pointer;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px transparent; transition: box-shadow .15s, transform .15s;
+}
+.swatches label:hover { transform: scale(1.08); }
+.swatches input:checked + label { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--ink); }
+.swatches input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="mast-top">
+      <div>
+        <p class="eyebrow" id="eyebrow">Lista personale</p>
+        <h1 class="wordmark">Wishlist</h1>
+        <p class="lede">Le cose che mi piacciono, divise per tipologia e in ordine di desiderio.</p>
+      </div>
+      <button type="button" class="btn-primary" id="add-btn" hidden><span class="plus" aria-hidden="true">+</span> Aggiungi oggetto</button>
+    </div>
+    <dl class="stats">
+      <div><dt>In lista</dt><dd id="st-count">–</dd></div>
+      <div><dt>Valore</dt><dd id="st-value">–</dd></div>
+      <div><dt>Lo voglio</dt><dd id="st-high">–</dd></div>
+      <div><dt>Già presi</dt><dd id="st-owned">–</dd></div>
+    </dl>
+    <div class="dist-block">
+      <div class="dist" id="dist" role="img" aria-label="Valore della lista per tipologia"></div>
+      <ul class="legend" id="legend"></ul>
+    </div>
+  </div>
+</header>
+
+<nav class="toolbar" aria-label="Filtri della lista">
+  <div class="wrap">
+    <div class="chips" id="chips"></div>
+    <div class="tb-right">
+      <label for="sort"><span class="sr">Ordina per</span>
+        <select id="sort">
+          <option value="prio">Per priorità</option>
+          <option value="recent">Più recenti</option>
+          <option value="priceAsc">Prezzo crescente</option>
+          <option value="priceDesc">Prezzo decrescente</option>
+        </select>
+      </label>
+      <label class="toggle" for="show-owned"><input type="checkbox" id="show-owned" checked> Mostra presi</label>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap" id="main">
+  <div class="notice" id="notice" aria-live="polite"></div>
+  <div id="sections"></div>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ed-title">
+    <div class="sheet-head">
+      <h2 id="ed-title">Nuovo oggetto</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Chiudi">×</button>
+    </div>
+    <form id="ed-form" novalidate>
+      <fieldset id="ed-fields">
+        <div>
+          <div class="drop" id="ed-drop" tabindex="0" role="button" aria-label="Foto dell'oggetto"></div>
+          <input type="file" id="ed-file" accept="image/*" hidden>
+        </div>
+        <div class="fields">
+          <label class="field" for="ed-name"><span>Nome</span>
+            <input type="text" id="ed-name" autocomplete="off" placeholder="Es. Lampada Tizio" maxlength="140">
+          </label>
+          <div class="row2">
+            <label class="field" for="ed-brand"><span>Marca</span>
+              <input type="text" id="ed-brand" autocomplete="off" placeholder="Es. Artemide" maxlength="80">
+            </label>
+            <label class="field" for="ed-price"><span>Prezzo (€)</span>
+              <input type="text" id="ed-price" inputmode="decimal" autocomplete="off" placeholder="129,90">
+            </label>
+          </div>
+          <div class="field" role="group" aria-labelledby="lbl-cat">
+            <span class="group-label" id="lbl-cat">Sezioni (anche più di una)</span>
+            <div class="seg" id="ed-cats"></div>
+          </div>
+          <div class="field" role="radiogroup" aria-labelledby="lbl-prio">
+            <span class="group-label" id="lbl-prio">Quanto lo vuoi</span>
+            <div class="seg" id="ed-prios"></div>
+          </div>
+          <label class="field" for="ed-url"><span>Link al negozio</span>
+            <input type="url" id="ed-url" autocomplete="off" placeholder="https://" inputmode="url">
+          </label>
+          <label class="field" for="ed-note"><span>Note</span>
+            <textarea id="ed-note" rows="2" maxlength="600" placeholder="Taglia, colore, dove l'hai visto…"></textarea>
+          </label>
+          <label class="check" for="ed-owned"><input type="checkbox" id="ed-owned"> L'ho già preso</label>
+        </div>
+      </fieldset>
+      <div class="sheet-foot">
+        <button type="button" class="btn-ghost danger" id="ed-delete">Elimina</button>
+        <a class="shop-link" id="ed-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Apri nel negozio ↗</a>
+        <span class="spacer"></span>
+        <button type="button" class="btn-ghost" data-close id="ed-cancel">Annulla</button>
+        <button type="submit" class="btn-primary" id="ed-save">Salva</button>
+      </div>
+      <p class="form-error" id="ed-error" role="alert"></p>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="sec-overlay" hidden>
+  <div class="sheet sheet-sm" role="dialog" aria-modal="true" aria-labelledby="sec-title">
+    <div class="sheet-head">
+      <h2 id="sec-title">Nuova sezione</h2>
+      <button type="button" class="icon-btn" data-sec-close aria-label="Chiudi">×</button>
+    </div>
+    <form id="sec-form" novalidate>
+      <label class="field" for="sec-name"><span>Nome</span>
+        <input type="text" id="sec-name" maxlength="40" autocomplete="off" placeholder="Es. Cucina, Libri, Viaggi">
+      </label>
+      <div class="field" role="radiogroup" aria-labelledby="lbl-col">
+        <span class="group-label" id="lbl-col">Colore</span>
+        <div class="swatches" id="sec-colors"></div>
+      </div>
+      <div class="sheet-foot">
+        <span class="spacer"></span>
+        <button type="button" class="btn-ghost" data-sec-close>Annulla</button>
+        <button type="submit" class="btn-primary">Crea sezione</button>
+      </div>
+      <p class="form-error" id="sec-error" role="alert"></p>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const CATS = [
+    { id: 'tech', name: 'Tech' },
+    { id: 'moda', name: 'Moda' },
+    { id: 'nerd', name: 'Mondo nerd' },
+    { id: 'print3d', name: 'Stampa 3D' },
+    { id: 'design', name: 'Oggetti di design' },
+  ];
+  const PALETTE = [
+    { key: 'rosso', name: 'Rosso' }, { key: 'arancio', name: 'Arancio' }, { key: 'giallo', name: 'Giallo' },
+    { key: 'verde', name: 'Verde' }, { key: 'acqua', name: 'Acqua' }, { key: 'azzurro', name: 'Azzurro' },
+    { key: 'blu', name: 'Blu' }, { key: 'viola', name: 'Viola' }, { key: 'rosa', name: 'Rosa' }, { key: 'grigio', name: 'Grigio' },
+  ];
+  const PAL_KEYS = PALETTE.map(p => p.key);
+  const NONE = { id: '_none', name: 'Senza sezione' };
+  const PRIOS = { 3: 'Lo voglio', 2: 'Mi piacerebbe', 1: 'Prima o poi' };
+  const ACCEPTED = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const eur0 = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+  const eur2 = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const money = n => (n == null || !isFinite(n)) ? '—' : (Number.isInteger(n) ? eur0.format(n) : eur2.format(n));
+  const moneyRound = n => eur0.format(Math.round(n || 0));
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  // Su claude.ai le foto sono asset dell'artifact; nella copia locale sono file della cartella foto o immagini incorporate
+  const imgSrc = v => /^(data:image\/|foto\/)/.test(v) ? v : '/_blob/' + v;
+
+  const prefs = {
+    get(k, d) { try { const v = localStorage.getItem('desiderata:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('desiderata:' + k, JSON.stringify(v)); } catch {} },
+  };
+
+  const state = {
+    items: [],
+    sections: [], // sezioni create da te: { id, name, color, createdAt }
+    phase: 'loading', // loading | ready | offline | error
+    filter: prefs.get('filter', 'all'),
+    sort: prefs.get('sort', 'prio'),
+    showOwned: prefs.get('showOwned', true),
+    canEdit: false,
+    db: null,
+    assets: null,
+  };
+  if (!['prio', 'recent', 'priceAsc', 'priceDesc'].includes(state.sort)) state.sort = 'prio';
+  let armedSection = null; // sezione in attesa del secondo clic per eliminarla
+  let armTimer;
+
+  /* ---------- dati ---------- */
+  function safeUrl(u) {
+    if (typeof u !== 'string') return '';
+    u = u.trim();
+    if (!u) return '';
+    if (!/^https?:\/\//i.test(u)) {
+      if (/^[\w-]+(\.[\w-]+)+/.test(u)) u = 'https://' + u; else return '';
+    }
+    try { const x = new URL(u); return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : ''; } catch { return ''; }
+  }
+  function parsePrice(s) {
+    s = String(s).replace(/€|eur|euro|\s/gi, '');
+    if (!s) return null;
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    else if ((s.match(/\./g) || []).length > 1 || /^\d{1,3}\.\d{3}$/.test(s)) s = s.replace(/\./g, '');
+    const n = Number(s);
+    return isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : null;
+  }
+  /* ---------- sezioni ---------- */
+  const allCats = () => [...CATS, ...state.sections];
+  const catIds = () => allCats().map(c => c.id);
+  const isCustom = id => state.sections.some(s => s.id === id);
+  function colorOf(id) {
+    const s = state.sections.find(x => x.id === id);
+    if (s) return `var(--p-${s.color})`;
+    return id === NONE.id ? 'var(--muted)' : `var(--c-${id})`;
+  }
+  // Le sezioni di un oggetto che esistono ancora; un oggetto rimasto senza finisce in "Senza sezione"
+  function itemCats(i) {
+    const ids = catIds();
+    const c = i.categories.filter(x => ids.includes(x));
+    return c.length ? c : [NONE.id];
+  }
+  const shownCats = () => state.items.some(i => itemCats(i)[0] === NONE.id) ? [...allCats(), NONE] : allCats();
+  function normSection(doc) {
+    const d = doc.data() || {};
+    return {
+      id: doc.id,
+      name: String(d.name || 'Sezione').slice(0, 40),
+      color: PAL_KEYS.includes(d.color) ? d.color : 'grigio',
+      createdAt: String(d.createdAt || ''),
+    };
+  }
+
+  function norm(doc) {
+    const d = doc.data() || {};
+    const raw = Array.isArray(d.categories) ? d.categories.filter(x => typeof x === 'string' && x) : [];
+    return {
+      id: doc.id,
+      name: String(d.name || 'Senza nome'),
+      brand: String(d.brand || ''),
+      categories: raw.length ? [...new Set(raw)] : (typeof d.category === 'string' && d.category ? [d.category] : []),
+      price: typeof d.price === 'number' && isFinite(d.price) ? d.price : null,
+      url: safeUrl(d.url),
+      priority: [1, 2, 3].includes(d.priority) ? d.priority : 2,
+      note: String(d.note || ''),
+      image: typeof d.image === 'string' && (/^[A-Za-z0-9_-]{8,64}$/.test(d.image) || /^(data:image\/|foto\/)/.test(d.image)) ? d.image : null,
+      owned: !!d.owned,
+      example: !!d.example,
+      createdAt: String(d.createdAt || ''),
+      updatedAt: String(d.updatedAt || d.createdAt || ''),
+    };
+  }
+  const cmp = (x, y) => (x > y) - (x < y);
+  const SORTS = {
+    prio: (a, b) => b.priority - a.priority || cmp(b.createdAt, a.createdAt),
+    recent: (a, b) => cmp(b.createdAt, a.createdAt),
+    priceAsc: (a, b) => cmp(a.price ?? Infinity, b.price ?? Infinity) || b.priority - a.priority,
+    priceDesc: (a, b) => cmp(b.price ?? -1, a.price ?? -1) || b.priority - a.priority,
+  };
+  const sorted = list => [...list].sort((a, b) => (a.owned - b.owned) || SORTS[state.sort](a, b));
+  const sum = list => list.reduce((s, i) => s + (i.price || 0), 0);
+
+  /* ---------- rendering ---------- */
+  function renderStats() {
+    const ready = state.phase === 'ready';
+    const open = state.items.filter(i => !i.owned);
+    const owned = state.items.filter(i => i.owned);
+    $('#st-count').textContent = ready ? open.length : '–';
+    $('#st-value').textContent = ready ? moneyRound(sum(open)) : '–';
+    $('#st-high').textContent = ready ? open.filter(i => i.priority === 3).length : '–';
+    $('#st-owned').textContent = ready ? owned.length : '–';
+
+    const last = state.items.map(i => i.updatedAt).filter(Boolean).sort().pop();
+    let eyebrow = 'Lista personale';
+    if (last) { try { eyebrow += ' · aggiornata il ' + new Date(last).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }); } catch {} }
+    $('#eyebrow').textContent = eyebrow;
+
+    const per = shownCats().map(c => ({ ...c, v: sum(open.filter(i => itemCats(i).includes(c.id))) }));
+    // Nella barra un oggetto in più sezioni divide il suo prezzo tra di esse, così il totale torna
+    const share = {};
+    open.forEach(i => { const cs = itemCats(i); cs.forEach(id => { share[id] = (share[id] || 0) + (i.price || 0) / cs.length; }); });
+    $('#dist').innerHTML = sum(open) > 0
+      ? per.filter(c => share[c.id] > 0).map(c => `<span style="--c:${colorOf(c.id)};flex-grow:${share[c.id]}" title="${esc(c.name)}: ${esc(moneyRound(c.v))}"></span>`).join('')
+      : '';
+    $('#legend').innerHTML = per.map(c =>
+      `<li style="--c:${colorOf(c.id)}"><span class="sw"></span>${esc(c.name)} <b>${ready ? esc(moneyRound(c.v)) : '–'}</b></li>`).join('');
+  }
+
+  function visibleItems() { return state.items.filter(i => state.showOwned || !i.owned); }
+
+  function renderChips() {
+    const vis = visibleItems();
+    const chips = [{ id: 'all', name: 'Tutto', n: vis.length }, ...shownCats().map(c => ({ ...c, n: vis.filter(i => itemCats(i).includes(c.id)).length }))];
+    $('#chips').innerHTML = chips.map(c => `
+      <button type="button" class="chip" data-filter="${esc(c.id)}" aria-pressed="${state.filter === c.id}" ${c.id !== 'all' ? `style="--c:${colorOf(c.id)}"` : ''}>
+        ${c.id !== 'all' ? '<span class="sw"></span>' : ''}${esc(c.name)}${state.phase === 'ready' ? `<span class="n">${c.n}</span>` : ''}
+      </button>`).join('')
+      + (state.phase === 'ready' && state.canEdit ? '<button type="button" class="chip chip-add" data-new-section>+ Nuova sezione</button>' : '');
+  }
+
+  function card(i) {
+    const label = PRIOS[i.priority];
+    const tile = i.image
+      ? `<img src="${esc(imgSrc(i.image))}" alt="" loading="lazy" data-fallback="${esc(i.brand || i.name)}">`
+      : `<span class="mark" aria-hidden="true">${esc(i.brand || i.name)}</span>`;
+    const tags = [i.owned ? '<span class="tag owned">Preso</span>' : '', i.example ? '<span class="tag">Esempio</span>' : ''].join('');
+    return `
+      <article class="card${i.owned ? ' is-owned' : ''}">
+        <button type="button" class="card-btn" data-open="${esc(i.id)}" aria-label="${esc(i.name)}${i.brand ? ', ' + esc(i.brand) : ''}, ${esc(money(i.price))}, ${esc(label)}">
+          <span class="tile">
+            ${tile}
+            <span class="prio p${i.priority}" title="${esc(label)}"><i class="${i.priority >= 1 ? 'on' : ''}"></i><i class="${i.priority >= 2 ? 'on' : ''}"></i><i class="${i.priority >= 3 ? 'on' : ''}"></i></span>
+            ${tags ? `<span class="tags">${tags}</span>` : ''}
+          </span>
+          <span class="meta">
+            ${i.brand ? `<span class="brand">${esc(i.brand)}</span>` : ''}
+            <span class="name">${esc(i.name)}</span>
+            <span class="price${i.price == null ? ' none' : ''}">${i.price == null ? 'Prezzo da vedere' : esc(money(i.price))}</span>
+          </span>
+        </button>
+        ${i.url ? `<a class="go" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer" aria-label="Apri ${esc(i.name)} nel negozio" title="Apri nel negozio">↗</a>` : ''}
+      </article>`;
+  }
+
+  function renderSections() {
+    const shown = shownCats();
+    if (state.filter !== 'all' && state.phase === 'ready' && !shown.some(c => c.id === state.filter)) state.filter = 'all';
+    const cats = state.filter === 'all' ? shown : shown.filter(c => c.id === state.filter);
+    const vis = visibleItems();
+    const editable = state.phase === 'ready' && state.canEdit;
+    $('#sections').innerHTML = cats.map(c => {
+      const list = sorted(vis.filter(i => itemCats(i).includes(c.id)));
+      const openList = list.filter(i => !i.owned);
+      let body;
+      if (state.phase === 'loading') {
+        body = `<div class="grid" aria-hidden="true">${'<div><div class="ghost-tile"></div><div class="ghost-line"></div></div>'.repeat(3)}</div>`;
+      } else {
+        const slot = editable && c.id !== NONE.id
+          ? `<button type="button" class="slot" data-add="${esc(c.id)}"><span class="big" aria-hidden="true">+</span>${list.length ? 'Aggiungi' : 'Aggiungi il primo oggetto'}<span class="sr"> a ${esc(c.name)}</span></button>`
+          : '';
+        body = (list.length || slot)
+          ? `<div class="grid">${list.map(card).join('')}${slot}</div>`
+          : `<p class="empty-line">Ancora niente in questa sezione.</p>`;
+      }
+      const del = editable && isCustom(c.id)
+        ? `<button type="button" class="sec-del${armedSection === c.id ? ' armed' : ''}" data-del-section="${esc(c.id)}">${armedSection === c.id ? 'Conferma eliminazione' : 'Elimina sezione'}</button>`
+        : '';
+      const meta = state.phase === 'ready'
+        ? `<p class="cat-meta"><span>${plural(openList.length, 'oggetto', 'oggetti')}</span><span>${esc(moneyRound(sum(openList)))}</span>${del}</p>`
+        : '';
+      return `
+        <section class="cat" style="--c:${colorOf(c.id)}" aria-labelledby="h-${esc(c.id)}">
+          <header class="cat-head"><h2 id="h-${esc(c.id)}"><span class="sw"></span>${esc(c.name)}</h2>${meta}</header>
+          ${body}
+        </section>`;
+    }).join('');
+  }
+
+  function renderNotice() {
+    const n = $('#notice');
+    if (state.phase === 'offline') {
+      n.innerHTML = `<p><strong>La lista si salva su claude.ai.</strong> Apri questa pagina dal tuo account Claude per vedere e aggiungere i tuoi oggetti.</p>`;
+    } else if (state.phase === 'error') {
+      n.innerHTML = `<p><strong>Non riesco a leggere la lista.</strong> Ricarica la pagina tra qualche secondo.</p>`;
+    } else if (state.phase === 'ready' && state.local) {
+      n.innerHTML = `<p>Stai usando la <strong>copia sul tuo computer</strong>. Le modifiche restano in questo browser e non arrivano alla versione su claude.ai.</p>`;
+    } else if (state.phase === 'ready' && state.canEdit && state.items.some(i => i.example)) {
+      n.innerHTML = `<p>Gli oggetti segnati come <strong>Esempio</strong> servono solo a mostrarti la pagina. Aggiungi i tuoi e togli gli esempi quando vuoi.</p>
+        <button type="button" class="btn-ghost" id="clear-examples">Rimuovi esempi</button>`;
+    } else if (state.public) {
+      n.innerHTML = '';
+    } else if (state.phase === 'ready' && !state.canEdit) {
+      n.innerHTML = `<p>Stai guardando la lista in sola lettura.</p>`;
+    } else {
+      n.innerHTML = '';
+    }
+  }
+
+  function render() {
+    renderStats();
+    renderChips();
+    renderSections();
+    renderNotice();
+    $('#add-btn').hidden = !(state.phase === 'ready' && state.canEdit);
+    $('#sort').value = state.sort;
+    $('#show-owned').checked = state.showOwned;
+  }
+
+  /* ---------- feedback ---------- */
+  let toastTimer;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function dbMessage(e) {
+    switch (e && e.code) {
+      case 'invalid_argument': return 'Non hai il permesso di modificare questa lista.';
+      case 'quota_exceeded': return 'La lista ha esaurito lo spazio disponibile. Elimina qualche oggetto e riprova.';
+      case 'resource_exhausted': return 'Troppe modifiche in poco tempo. Aspetta qualche secondo e riprova.';
+      case 'revoked': return 'L’accesso a questa lista è cambiato. Ricarica la pagina.';
+      default: return 'Salvataggio non riuscito. Controlla la connessione e riprova.';
+    }
+  }
+  function uploadMessage(e) {
+    switch (e && e.code) {
+      case 'too_large': return 'La foto è troppo grande: il limite è 20 MB.';
+      case 'unsupported_type': return 'Formato non supportato. Usa una foto JPG, PNG o WebP.';
+      case 'quota_or_state': return 'Lo spazio per le foto è esaurito. Elimina qualche foto e riprova.';
+      case 'rate_limited': return 'Troppi caricamenti di fila. Aspetta un momento e riprova.';
+      case 'upstream_auth': return 'Sessione scaduta. Ricarica la pagina e riprova.';
+      default: return 'Caricamento della foto non riuscito. Riprova.';
+    }
+  }
+  async function withRetry(fn) {
+    try { return await fn(); }
+    catch (e) {
+      if (e && e.code === 'unavailable') {
+        await new Promise(r => setTimeout(r, 400 + Math.random() * 500));
+        return fn();
+      }
+      throw e;
+    }
+  }
+
+  /* ---------- scheda oggetto ---------- */
+  const overlay = $('#overlay');
+  let draft = null;
+  let lastFocus = null;
+
+  const checkedCats = () => [...document.querySelectorAll('input[name="ed-cat"]:checked')].map(x => x.value);
+  function renderEdCats(checked) {
+    $('#ed-cats').innerHTML = allCats().map(c => `
+      <input type="checkbox" name="ed-cat" id="ed-cat-${esc(c.id)}" value="${esc(c.id)}"${checked.includes(c.id) ? ' checked' : ''}>
+      <label for="ed-cat-${esc(c.id)}" style="--c:${colorOf(c.id)}"><span class="sw"></span>${esc(c.name)}</label>`).join('')
+      + (editable() ? '<button type="button" class="seg-add" data-new-section="editor">+ Nuova sezione</button>' : '');
+  }
+  $('#ed-prios').innerHTML = [3, 2, 1].map(p => `
+    <input type="radio" name="ed-prio" id="ed-prio-${p}" value="${p}">
+    <label for="ed-prio-${p}">${esc(PRIOS[p])}</label>`).join('');
+
+  const editable = () => !!(draft && !draft.readOnly);
+  const setError = msg => { $('#ed-error').textContent = msg || ''; };
+
+  function renderDrop() {
+    const drop = $('#ed-drop');
+    if (!draft) return;
+    drop.style.setProperty('--c', colorOf(checkedCats()[0] || draft.category));
+    const src = draft.preview || (draft.image ? imgSrc(draft.image) : '');
+    const canUpload = editable() && !!state.assets;
+    drop.classList.toggle('busy', !!draft.uploading);
+    drop.setAttribute('aria-disabled', String(!canUpload));
+    if (src) {
+      drop.innerHTML = `<img src="${esc(src)}" alt="">` + (canUpload && !draft.uploading ? '<button type="button" class="drop-remove" id="ed-remove-img">Rimuovi foto</button>' : '');
+    } else {
+      const text = !editable() ? 'Nessuna foto'
+        : canUpload ? 'Trascina qui una foto,<br>incollala o <u>sceglila</u>'
+        : 'Le foto si possono aggiungere solo da chi modifica la lista';
+      drop.innerHTML = `<div class="drop-empty">${text}</div>`;
+    }
+  }
+
+  function openEditor(item, cat) {
+    const readOnly = !(state.canEdit && state.db);
+    if (!item && readOnly) return;
+    draft = {
+      id: item ? item.id : null,
+      original: item || null,
+      image: item ? item.image : null,
+      preview: null,
+      uploaded: [],
+      uploading: false,
+      saving: false,
+      confirmDelete: false,
+      readOnly,
+      category: item ? itemCats(item)[0] : (cat || CATS[0].id),
+    };
+    $('#ed-name').value = item ? item.name : '';
+    $('#ed-brand').value = item ? item.brand : '';
+    $('#ed-price').value = item && item.price != null
+      ? item.price.toLocaleString('it-IT', { minimumFractionDigits: Number.isInteger(item.price) ? 0 : 2, maximumFractionDigits: 2 })
+      : '';
+    $('#ed-url').value = item ? item.url : '';
+    $('#ed-note').value = item ? item.note : '';
+    $('#ed-owned').checked = item ? item.owned : false;
+    renderEdCats(item ? itemCats(item).filter(x => x !== NONE.id) : [draft.category]);
+    $('#ed-prio-' + (item ? item.priority : 2)).checked = true;
+    $('#ed-fields').disabled = readOnly;
+    $('#ed-title').textContent = readOnly ? (item ? item.name : '') : (item ? 'Modifica oggetto' : 'Nuovo oggetto');
+    const del = $('#ed-delete');
+    del.hidden = !item || readOnly;
+    del.textContent = 'Elimina';
+    del.classList.remove('armed');
+    $('#ed-save').hidden = readOnly;
+    $('#ed-save').disabled = false;
+    $('#ed-cancel').textContent = readOnly ? 'Chiudi' : 'Annulla';
+    const link = $('#ed-link');
+    link.hidden = !(item && item.url);
+    if (item && item.url) link.href = item.url;
+    $('#ed-note').closest('.field').hidden = readOnly && !(item && item.note);
+    $('#ed-url').closest('.field').hidden = readOnly;
+    setError('');
+    renderDrop();
+    lastFocus = document.activeElement;
+    overlay.hidden = false;
+    document.body.classList.add('locked');
+    (readOnly ? overlay.querySelector('.icon-btn') : $('#ed-name')).focus();
+  }
+
+  function closeEditor() {
+    if (!draft) return;
+    if (draft.uploaded.length && state.assets) draft.uploaded.forEach(id => state.assets.delete(id).catch(() => {}));
+    if (draft.preview) URL.revokeObjectURL(draft.preview);
+    draft = null;
+    overlay.hidden = true;
+    document.body.classList.remove('locked');
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+
+  async function shrink(file) {
+    const convertible = !ACCEPTED.includes(file.type);
+    if (!convertible && file.type === 'image/gif') return file;
+    // La copia locale salva le foto nel browser, dove lo spazio è poco: le rimpicciolisce sempre
+    if (!convertible && file.size <= (state.local ? 250000 : 1200000)) return file;
+    try {
+      const bmp = await createImageBitmap(file);
+      const s = Math.min(1, (state.local ? 900 : 1600) / Math.max(bmp.width, bmp.height));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(bmp.width * s));
+      c.height = Math.max(1, Math.round(bmp.height * s));
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      if (bmp.close) bmp.close();
+      let out = await new Promise(r => c.toBlob(r, 'image/webp', 0.86));
+      if (!out || out.type !== 'image/webp') {
+        const flat = document.createElement('canvas');
+        flat.width = c.width; flat.height = c.height;
+        const ctx = flat.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, flat.width, flat.height);
+        ctx.drawImage(c, 0, 0);
+        out = await new Promise(r => flat.toBlob(r, 'image/jpeg', 0.88));
+      }
+      if (out && out.size) return out;
+    } catch {}
+    return file;
+  }
+
+  async function handleFile(file) {
+    const d = draft;
+    if (!d || d.readOnly || !state.assets || d.uploading) return;
+    const looksImage = file && (/^image\//.test(file.type) || /\.(heic|heif|jpe?g|png|webp|gif)$/i.test(file.name || ''));
+    if (!looksImage) { setError('Scegli un file immagine: JPG, PNG o WebP.'); return; }
+    setError('');
+    const prevPreview = d.preview;
+    d.preview = URL.createObjectURL(file);
+    d.uploading = true;
+    renderDrop();
+    try {
+      const blob = await shrink(file);
+      if (!ACCEPTED.includes(blob.type)) throw { code: 'unsupported_type' };
+      const res = await state.assets.upload(blob, { type: blob.type });
+      if (draft !== d) { state.assets.delete(res.id).catch(() => {}); return; }
+      d.uploaded.push(res.id);
+      d.image = res.id;
+      if (prevPreview) URL.revokeObjectURL(prevPreview);
+    } catch (e) {
+      if (draft !== d) return;
+      URL.revokeObjectURL(d.preview);
+      d.preview = prevPreview;
+      setError(uploadMessage(e));
+    } finally {
+      if (draft === d) { d.uploading = false; renderDrop(); }
+    }
+  }
+
+  async function save(ev) {
+    ev.preventDefault();
+    const d = draft;
+    if (!d || d.readOnly || d.saving) return;
+    if (d.uploading) { setError('Aspetta che la foto finisca di caricarsi.'); return; }
+    const name = $('#ed-name').value.trim();
+    if (!name) { setError('Scrivi il nome dell’oggetto.'); $('#ed-name').focus(); return; }
+    const priceRaw = $('#ed-price').value.trim();
+    const price = priceRaw ? parsePrice(priceRaw) : null;
+    if (priceRaw && price == null) { setError('Il prezzo non è un numero valido. Scrivilo così: 129,90'); $('#ed-price').focus(); return; }
+    const urlRaw = $('#ed-url').value.trim();
+    const url = urlRaw ? safeUrl(urlRaw) : '';
+    if (urlRaw && !url) { setError('Il link deve essere un indirizzo web, per esempio https://negozio.it/prodotto'); $('#ed-url').focus(); return; }
+    const categories = checkedCats();
+    if (!categories.length) { setError('Scegli almeno una sezione.'); return; }
+    const now = new Date().toISOString();
+    const body = {
+      name,
+      brand: $('#ed-brand').value.trim(),
+      categories,
+      category: categories[0],
+      price,
+      url,
+      priority: Number((document.querySelector('input[name="ed-prio"]:checked') || {}).value || 2),
+      note: $('#ed-note').value.trim(),
+      owned: $('#ed-owned').checked,
+      image: d.image || null,
+      example: false,
+      updatedAt: now,
+    };
+    // La lista si aggiorna subito; la conferma del server arriva dopo, quindi la scheda si chiude senza aspettarla
+    d.saving = true;
+    const write = d.id
+      ? withRetry(() => state.db.doc('items/' + d.id).update(body))
+      : withRetry(() => state.db.collection('items').doc().set({ ...body, createdAt: now }));
+    const fresh = d.uploaded.slice();
+    const stale = fresh.filter(id => id !== body.image);
+    if (d.original && d.original.image && d.original.image !== body.image) stale.push(d.original.image);
+    d.uploaded = [];
+    const wasNew = !d.id;
+    closeEditor();
+    toast(wasNew ? 'Aggiunto alla lista' : 'Modifiche salvate');
+    write.then(() => {
+      if (state.assets) stale.forEach(id => state.assets.delete(id).catch(() => {}));
+    }, e => {
+      if (state.assets) fresh.forEach(id => state.assets.delete(id).catch(() => {}));
+      toast(dbMessage(e));
+    });
+  }
+
+  async function removeItem() {
+    const d = draft;
+    if (!d || !d.id || d.readOnly) return;
+    const btn = $('#ed-delete');
+    if (!d.confirmDelete) {
+      d.confirmDelete = true;
+      btn.textContent = 'Conferma eliminazione';
+      btn.classList.add('armed');
+      return;
+    }
+    const write = withRetry(() => state.db.doc('items/' + d.id).delete());
+    const ids = [...d.uploaded];
+    if (d.original && d.original.image) ids.push(d.original.image);
+    d.uploaded = [];
+    closeEditor();
+    toast('Eliminato dalla lista');
+    write.then(() => {
+      if (state.assets) ids.forEach(id => state.assets.delete(id).catch(() => {}));
+    }, e => toast(dbMessage(e)));
+  }
+
+  async function removeExamples(btn) {
+    const examples = state.items.filter(i => i.example);
+    btn.disabled = true;
+    btn.textContent = 'Rimozione…';
+    for (const i of examples) {
+      try {
+        await withRetry(() => state.db.doc('items/' + i.id).delete());
+        if (i.image && state.assets) state.assets.delete(i.image).catch(() => {});
+      } catch (e) { toast(dbMessage(e)); break; }
+    }
+  }
+
+  /* ---------- nuova sezione ---------- */
+  const secOverlay = $('#sec-overlay');
+  let secFromEditor = false;
+  let secLastFocus = null;
+  $('#sec-colors').innerHTML = PALETTE.map(p => `
+    <input type="radio" name="sec-color" id="sec-color-${p.key}" value="${p.key}">
+    <label for="sec-color-${p.key}" style="--c:var(--p-${p.key})" title="${p.name}"><span class="sr">${p.name}</span></label>`).join('');
+
+  function openSection(fromEditor) {
+    if (!(state.canEdit && state.db)) return;
+    secFromEditor = fromEditor && !!draft;
+    const used = state.sections.map(s => s.color);
+    $('#sec-color-' + (PAL_KEYS.find(k => !used.includes(k)) || PAL_KEYS[0])).checked = true;
+    $('#sec-name').value = '';
+    $('#sec-error').textContent = '';
+    secLastFocus = document.activeElement;
+    secOverlay.hidden = false;
+    document.body.classList.add('locked');
+    $('#sec-name').focus();
+  }
+  function closeSection() {
+    secOverlay.hidden = true;
+    if (overlay.hidden) document.body.classList.remove('locked');
+    if (secLastFocus && document.contains(secLastFocus)) secLastFocus.focus();
+  }
+  function createSection(ev) {
+    ev.preventDefault();
+    const name = $('#sec-name').value.trim().replace(/\s+/g, ' ');
+    if (!name) { $('#sec-error').textContent = 'Scrivi il nome della sezione.'; $('#sec-name').focus(); return; }
+    if (allCats().some(c => c.name.toLowerCase() === name.toLowerCase())) {
+      $('#sec-error').textContent = 'Esiste già una sezione con questo nome.'; $('#sec-name').focus(); return;
+    }
+    const color = (document.querySelector('input[name="sec-color"]:checked') || {}).value || 'grigio';
+    const id = 's-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const createdAt = new Date().toISOString();
+    const write = withRetry(() => state.db.collection('sections').doc(id).set({ name, color, createdAt }));
+    if (!isCustom(id)) state.sections = [...state.sections, { id, name, color, createdAt }];
+    const fromEditor = secFromEditor && draft;
+    closeSection();
+    if (fromEditor) { renderEdCats([...checkedCats(), id]); renderDrop(); }
+    render();
+    toast('Sezione creata');
+    write.catch(e => toast(dbMessage(e)));
+  }
+  async function deleteSection(id) {
+    if (armedSection !== id) {
+      armedSection = id;
+      render();
+      clearTimeout(armTimer);
+      armTimer = setTimeout(() => { armedSection = null; render(); }, 4000);
+      return;
+    }
+    clearTimeout(armTimer);
+    armedSection = null;
+    const affected = state.items.filter(i => i.categories.includes(id));
+    state.sections = state.sections.filter(s => s.id !== id);
+    if (state.filter === id) { state.filter = 'all'; prefs.set('filter', 'all'); }
+    render();
+    toast('Sezione eliminata');
+    try {
+      await withRetry(() => state.db.doc('sections/' + id).delete());
+      for (const i of affected) {
+        const categories = i.categories.filter(x => x !== id);
+        await withRetry(() => state.db.doc('items/' + i.id).update({ categories, category: categories[0] || '', updatedAt: new Date().toISOString() }));
+      }
+    } catch (e) { toast(dbMessage(e)); }
+  }
+  $('#sec-form').addEventListener('submit', createSection);
+
+  /* ---------- eventi ---------- */
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-filter],[data-open],[data-add],[data-close],[data-new-section],[data-del-section],[data-sec-close],#add-btn,#clear-examples,#ed-delete,#ed-remove-img');
+    if (!t) {
+      if (e.target === secOverlay) closeSection();
+      else if (e.target === overlay) closeEditor();
+      return;
+    }
+    if (t.matches('[data-new-section]')) {
+      openSection(t.dataset.newSection === 'editor');
+    } else if (t.matches('[data-del-section]')) {
+      deleteSection(t.dataset.delSection);
+    } else if (t.matches('[data-sec-close]')) {
+      closeSection();
+    } else if (t.matches('[data-filter]')) {
+      state.filter = t.dataset.filter;
+      prefs.set('filter', state.filter);
+      render();
+      const main = $('#main');
+      if (main.getBoundingClientRect().top < 0) main.scrollIntoView({ block: 'start' });
+    } else if (t.matches('[data-open]')) {
+      const item = state.items.find(i => i.id === t.dataset.open);
+      if (item) openEditor(item);
+    } else if (t.matches('[data-add]')) {
+      openEditor(null, t.dataset.add);
+    } else if (t.id === 'add-btn') {
+      openEditor(null, state.filter !== 'all' && state.filter !== NONE.id ? state.filter : CATS[0].id);
+    } else if (t.matches('[data-close]')) {
+      closeEditor();
+    } else if (t.id === 'clear-examples') {
+      removeExamples(t);
+    } else if (t.id === 'ed-delete') {
+      removeItem();
+    } else if (t.id === 'ed-remove-img') {
+      e.stopPropagation();
+      if (!editable()) return;
+      if (draft.preview) URL.revokeObjectURL(draft.preview);
+      draft.preview = null;
+      draft.image = null;
+      renderDrop();
+    }
+  });
+
+  $('#sort').addEventListener('change', e => { state.sort = e.target.value; prefs.set('sort', state.sort); render(); });
+  $('#show-owned').addEventListener('change', e => { state.showOwned = e.target.checked; prefs.set('showOwned', state.showOwned); render(); });
+  $('#ed-form').addEventListener('submit', save);
+  $('#ed-cats').addEventListener('change', renderDrop);
+
+  const drop = $('#ed-drop');
+  const fileInput = $('#ed-file');
+  const pick = () => { if (editable() && state.assets && !draft.uploading) fileInput.click(); };
+  drop.addEventListener('click', e => { if (!e.target.closest('#ed-remove-img')) pick(); });
+  drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+  fileInput.addEventListener('change', () => { const f = fileInput.files && fileInput.files[0]; fileInput.value = ''; if (f) handleFile(f); });
+  drop.addEventListener('dragover', e => { if (!editable() || !state.assets) return; e.preventDefault(); drop.classList.add('dragging'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('dragging'));
+  drop.addEventListener('drop', e => {
+    drop.classList.remove('dragging');
+    if (!editable() || !state.assets) return;
+    e.preventDefault();
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+  document.addEventListener('paste', e => {
+    if (!editable() || !state.assets) return;
+    const f = [...((e.clipboardData && e.clipboardData.files) || [])].find(x => /^image\//.test(x.type));
+    if (f) { e.preventDefault(); handleFile(f); }
+  });
+
+  document.addEventListener('keydown', e => {
+    const top = !secOverlay.hidden ? secOverlay : !overlay.hidden ? overlay : null;
+    if (!top) return;
+    if (e.key === 'Escape') { e.preventDefault(); if (top === secOverlay) closeSection(); else closeEditor(); return; }
+    if (e.key === 'Tab') {
+      const nodes = [...top.querySelectorAll('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])')]
+        .filter(el => !el.disabled && !el.hidden && el.offsetParent !== null && el.type !== 'file');
+      if (!nodes.length) return;
+      const first = nodes[0], last = nodes[nodes.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  // Una foto che non si carica torna al segnaposto tipografico
+  document.addEventListener('error', e => {
+    const img = e.target;
+    if (!(img instanceof HTMLImageElement) || !img.dataset.fallback) return;
+    const span = document.createElement('span');
+    span.className = 'mark';
+    span.setAttribute('aria-hidden', 'true');
+    span.textContent = img.dataset.fallback;
+    img.replaceWith(span);
+  }, true);
+
+  /* ---------- copia locale (file aperto dal computer) ---------- */
+  // La lista com'era su claude.ai il 10 novembre 2026: la copia locale parte da qui la prima volta che si apre
+  const SEED = {
+      "064ihyh4uko9bh9jj31d": {
+          "name": "Box Original Artwork Collection",
+          "brand": "Yu-Gi-Oh!",
+          "categories": [
+              "nerd"
+          ],
+          "category": "nerd",
+          "price": 89.9,
+          "priority": 1,
+          "note": "",
+          "url": "https://newbiestore.it/products/yu-gi-oh-ocg-original-artwork-collection-box-15-buste-giapponese-preordine",
+          "owned": false,
+          "image": "foto/yugioh-original-artwork-box.png",
+          "createdAt": "2026-10-29T23:04:11.848Z"
+      },
+      "08m9hmjy1zs4op1ll76c": {
+          "name": "Giacca cerata SL Spey",
+          "brand": "Barbour",
+          "categories": [
+              "moda"
+          ],
+          "category": "moda",
+          "price": 530,
+          "priority": 3,
+          "note": "Taglia M o L, colore Sand o Olive",
+          "url": "https://www.barbour.com/it/giacca-cerata-sl-spey-MWX1212SN31.html",
+          "owned": false,
+          "image": "foto/barbour-sl-spey.jpg",
+          "createdAt": "2026-10-29T20:43:31.375Z"
+      },
+      "12z22llc5fmnmac8a867": {
+          "name": "MITTBACK, Cavalletto",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 35,
+          "priority": 3,
+          "note": "2x bianco",
+          "url": "https://www.ikea.com/it/it/p/mittback-cavalletto-bianco-legno-massiccio-70470993/",
+          "owned": false,
+          "image": "foto/ikea-mittback.png",
+          "createdAt": "2026-10-30T12:17:00.262Z"
+      },
+      "1fjgqfz46u2fzs14nqt3": {
+          "name": "Leggings Running",
+          "brand": "Kiprun",
+          "categories": [
+              "s-mvu60yx95o3n"
+          ],
+          "category": "s-mvu60yx95o3n",
+          "price": 17.99,
+          "priority": 2,
+          "note": "M",
+          "url": "https://www.decathlon.it/p/leggings-running-run-warm-100-uomo-neri/346856/c382m8843568",
+          "owned": false,
+          "image": "foto/kiprun-leggings.png",
+          "createdAt": "2026-10-29T23:26:12.163Z"
+      },
+      "1t18lt48hu3atbsfswcx": {
+          "name": "Cappello 'Five'",
+          "brand": "545",
+          "categories": [
+              "moda"
+          ],
+          "category": "moda",
+          "price": 40,
+          "priority": 2,
+          "note": "Borgogna",
+          "url": "https://fivefourfive.it/products/545-five-6-pan-cap-2",
+          "owned": false,
+          "image": "foto/545-cappello-five.png",
+          "createdAt": "2026-10-29T23:07:35.911Z"
+      },
+      "4tue7g4va5m0hag8egk2": {
+          "name": "IKEA PS 2026, Lampada da terra",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 39.95,
+          "priority": 2,
+          "note": "Blu, 182cm",
+          "url": "https://www.ikea.com/it/it/p/ikea-ps-2026-lampada-da-terra-a-luce-indiretta-blu-50608519/",
+          "owned": false,
+          "image": "foto/ikea-ps-2026-lampada.png",
+          "createdAt": "2026-10-30T12:27:21.786Z"
+      },
+      "4uetuvh2n7f6qimujnxu": {
+          "name": "Giacca cerata corta Bedale",
+          "brand": "Barbour",
+          "categories": [
+              "moda"
+          ],
+          "category": "moda",
+          "price": 395,
+          "priority": 3,
+          "note": "Olive",
+          "url": "https://www.barbour.com/it/giacca-cerata-corta-bedale-MWX2205OL52.html",
+          "owned": false,
+          "image": "foto/barbour-bedale.webp",
+          "createdAt": "2026-10-30T12:42:01.088Z"
+      },
+      "5wnk6j5khvw2g3tw9bau": {
+          "name": "Dictionary Of Color Combinations - Volume 2",
+          "brand": "Seigensha",
+          "categories": [
+              "s-mvu5z0vhk60r"
+          ],
+          "category": "s-mvu5z0vhk60r",
+          "price": 20,
+          "priority": 2,
+          "note": "Di Sanzo Wada",
+          "url": "https://www.amazon.it/dp/4861527724",
+          "owned": false,
+          "image": "foto/dictionary-color-combinations-2.png",
+          "createdAt": "2026-10-29T23:32:07.847Z"
+      },
+      "7215yh4p4qckqxurtx2r": {
+          "name": "Tavola Lamellare di Abete",
+          "brand": "Leroy Merlin",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 48,
+          "priority": 3,
+          "note": "Abete, 60x200cm, 28mm sp",
+          "url": "https://www.leroymerlin.it/prodotti/tavola-lamellare-in-legno-di-abete-1-scelta-l-60-x-200-cm-x-sp-28-mm-35281393.html",
+          "owned": false,
+          "image": "foto/tavola-abete.png",
+          "createdAt": "2026-10-30T12:22:44.294Z"
+      },
+      "8r8ng9o9jycmvd02hc3n": {
+          "name": "BRÄNNBOLL, Scaffale con rotelle",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 59.95,
+          "priority": 2,
+          "note": "Bianco",
+          "url": "https://www.ikea.com/it/it/p/braennboll-scaffale-con-rotelle-bianco-60586258/",
+          "owned": false,
+          "image": "foto/ikea-brannboll.png",
+          "createdAt": "2026-10-30T12:29:52.445Z"
+      },
+      "9p0fuq684q4odes8yo1x": {
+          "name": "Nintendo Switch 2",
+          "brand": "Nintendo",
+          "categories": [
+              "tech"
+          ],
+          "category": "tech",
+          "price": 499,
+          "priority": 1,
+          "note": "",
+          "url": "https://www.unieuro.it/online/Console-Nintendo-Switch-2/Switch-2-pidNINSWITCH2ST",
+          "owned": false,
+          "image": "foto/nintendo-switch-2.png",
+          "createdAt": "2026-10-30T12:31:31.447Z"
+      },
+      "ad6dd5dspm4x646mfdz5": {
+          "name": "BROR, Scaffale",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": null,
+          "priority": 3,
+          "note": "Nero, 85x40x190",
+          "url": "https://www.ikea.com/it/it/p/bror-scaffale-nero-s19619407/",
+          "owned": false,
+          "image": "foto/ikea-bror-scaffale.png",
+          "createdAt": "2026-10-30T12:14:35.346Z"
+      },
+      "etvpeu7n6vgnh2rfx6yp": {
+          "name": "Multi-Size Hotends Kit",
+          "brand": "BambuLab",
+          "categories": [
+              "print3d"
+          ],
+          "category": "print3d",
+          "price": 39.98,
+          "priority": 2,
+          "note": "",
+          "url": "https://eu.store.bambulab.com/it/products/multi-size-hotends-kit?id=759208974321975328",
+          "owned": false,
+          "image": "foto/bambulab-hotends-kit.png",
+          "createdAt": "2026-10-30T12:38:09.306Z"
+      },
+      "ex-boston": {
+          "name": "Boston",
+          "brand": "Birkenstock",
+          "categories": [
+              "moda"
+          ],
+          "category": "moda",
+          "price": 150,
+          "priority": 3,
+          "note": "Colore taupe, taglia 43.",
+          "url": "https://www.birkenstock.com/",
+          "owned": false,
+          "image": "foto/birkenstock-boston.jpg",
+          "createdAt": "2026-10-27T09:00:00.000Z"
+      },
+      "ex-kindle": {
+          "name": "Kindle Paperwhite",
+          "brand": "Amazon",
+          "categories": [
+              "tech",
+              "s-mvu5z0vhk60r"
+          ],
+          "category": "tech",
+          "price": 169.99,
+          "priority": 2,
+          "note": "",
+          "url": "https://www.amazon.it/",
+          "owned": false,
+          "image": "foto/kindle-paperwhite.png",
+          "createdAt": "2026-10-20T09:00:00.000Z"
+      },
+      "ex-tizio": {
+          "name": "Lampada Tizio",
+          "brand": "Artemide",
+          "categories": [
+              "design",
+              "s-mvuxg353t5p8"
+          ],
+          "category": "design",
+          "price": 420,
+          "priority": 2,
+          "note": "Per la scrivania.",
+          "url": "https://www.artemide.com/",
+          "owned": false,
+          "image": "foto/artemide-tizio.jpg",
+          "createdAt": "2026-10-26T09:00:00.000Z"
+      },
+      "hg9pwgdgu4yphbbl3sd9": {
+          "name": "Engineering Plate",
+          "brand": "BambuLab",
+          "categories": [
+              "print3d"
+          ],
+          "category": "print3d",
+          "price": 30.99,
+          "priority": 2,
+          "note": "",
+          "url": "https://eu.store.bambulab.com/it/products/bambu-engineering-plate?id=657381173900972035",
+          "owned": false,
+          "image": "foto/bambulab-engineering-plate.png",
+          "createdAt": "2026-10-30T12:38:54.573Z"
+      },
+      "j4cgzo8ghudul5q01alv": {
+          "name": "Playstation 5",
+          "brand": "Sony",
+          "categories": [
+              "tech",
+              "nerd"
+          ],
+          "category": "tech",
+          "price": 589,
+          "priority": 1,
+          "note": "Digital version",
+          "url": "https://www.unieuro.it/online/Console-Playstation-5/PlayStation-5-Digital-Edition-pidSON1000049749",
+          "owned": false,
+          "image": "foto/playstation-5.png",
+          "createdAt": "2026-10-29T22:55:39.638Z"
+      },
+      "kj7536it256kopoexxh8": {
+          "name": "Screwdriver Tool Set",
+          "brand": "HOTO",
+          "categories": [
+              "print3d"
+          ],
+          "category": "print3d",
+          "price": 77.95,
+          "priority": 2,
+          "note": "Bianco o rosso",
+          "url": "https://hototools.com/products/3-6v-screwdriver-tool-set",
+          "owned": false,
+          "image": "foto/hoto-screwdriver-set.png",
+          "createdAt": "2026-10-29T22:51:50.843Z"
+      },
+      "km6j2odwjh8xz0xflm8t": {
+          "name": "SKÅDIS, Pannello portaoggetti",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 17,
+          "priority": 3,
+          "note": "Nero, 76x56",
+          "url": "https://www.ikea.com/it/it/p/skadis-pannello-portaoggetti-nero-50534378/",
+          "owned": false,
+          "image": "foto/ikea-skadis.png",
+          "createdAt": "2026-10-30T12:17:54.198Z"
+      },
+      "ky76k1l0i40hbmkp18zk": {
+          "name": "Guanti Touch",
+          "brand": "Kiprun",
+          "categories": [
+              "s-mvu60yx95o3n"
+          ],
+          "category": "s-mvu60yx95o3n",
+          "price": 8.99,
+          "priority": 2,
+          "note": "Neri",
+          "url": "https://www.decathlon.it/p/guanti-touch-running-adulto-unisex-warm-100-neri/340758/c382m8759626",
+          "owned": false,
+          "image": "foto/kiprun-guanti.png",
+          "createdAt": "2026-10-29T23:23:19.647Z"
+      },
+      "lmvtyo5hgb1ptv": {
+          "name": "Bang & Olufsen Beosound 9000",
+          "brand": "Bang & Olufsen",
+          "categories": [
+              "tech",
+              "design",
+              "s-mvuxg353t5p8"
+          ],
+          "category": "tech",
+          "price": 1500,
+          "priority": 1,
+          "note": "",
+          "url": "https://www.subito.it/annunci-italia/vendita/audio-video/?q=beosound+9000",
+          "owned": false,
+          "image": "foto/beosound-9000.png",
+          "createdAt": "2026-10-29T20:01:00.000Z"
+      },
+      "lmvtyth9t5kzeq": {
+          "name": "CMF Speaker S",
+          "brand": "CMF Nothing",
+          "categories": [
+              "tech"
+          ],
+          "category": "tech",
+          "price": 59,
+          "priority": 3,
+          "note": "",
+          "url": "https://it.nothing.tech/products/cmf-speaker-s?Color=White",
+          "owned": false,
+          "image": "foto/cmf-speaker-s.webp",
+          "createdAt": "2026-10-29T20:00:00.000Z"
+      },
+      "mdn47syv2jfkhhjd88oz": {
+          "name": "IKEA PS 2026, Poltrona letto",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 249,
+          "priority": 2,
+          "note": "Arancione",
+          "url": "https://www.ikea.com/it/it/p/ikea-ps-2026-poltrona-letto-skiftebo-arancione-vivo-60620375/",
+          "owned": false,
+          "image": "foto/ikea-ps-2026-poltrona.png",
+          "createdAt": "2026-10-30T12:19:32.144Z"
+      },
+      "n91omt0q27eem5o3dz5m": {
+          "name": "BROR, Banco da lavoro con cassetti",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 249,
+          "priority": 3,
+          "note": "Nero",
+          "url": "https://www.ikea.com/it/it/p/bror-banco-da-lavoro-con-cassetti-nero-compensato-di-pino-70494300/",
+          "owned": false,
+          "image": "foto/ikea-bror-banco-cassetti.png",
+          "createdAt": "2026-10-30T12:10:42.416Z"
+      },
+      "ow795phzj5xk2b5ffptw": {
+          "name": "AirPods 5",
+          "brand": "Apple",
+          "categories": [
+              "tech"
+          ],
+          "category": "tech",
+          "price": 149,
+          "priority": 1,
+          "note": "",
+          "url": "",
+          "owned": false,
+          "image": "foto/airpods-5.jpg",
+          "createdAt": "2026-10-29T20:53:50.537Z"
+      },
+      "su1ypxg0365kf0mndpku": {
+          "name": "LÖPARBANA, Sedia Gaming",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 139,
+          "priority": 3,
+          "note": "Nera",
+          "url": "https://www.ikea.com/it/it/p/loeparbana-sedia-da-gaming-vissle-grigio-scuro-60586324/",
+          "owned": false,
+          "image": "foto/ikea-loparbana.png",
+          "createdAt": "2026-10-30T12:08:59.617Z"
+      },
+      "tkiqcite090de0mz731t": {
+          "name": "Mocassino Ravenna",
+          "brand": "Sebago",
+          "categories": [
+              "moda"
+          ],
+          "category": "moda",
+          "price": 290,
+          "priority": 2,
+          "note": "43, dark brown",
+          "url": "https://www.sebago.com/it/products/moc-man-ravenna-dk-brown-brown-seal-751282w-no-team-901",
+          "owned": false,
+          "image": "foto/sebago-ravenna.jpg",
+          "createdAt": "2026-10-29T20:50:42.965Z"
+      },
+      "tzjs7j7nj4hcj989ning": {
+          "name": "A Dictionary of Color Combinations",
+          "brand": "Seigensha",
+          "categories": [
+              "s-mvu5z0vhk60r"
+          ],
+          "category": "s-mvu5z0vhk60r",
+          "price": 20,
+          "priority": 3,
+          "note": "Di Sanzo Wada",
+          "url": "https://www.amazon.it/dp/4861522471",
+          "owned": false,
+          "image": "foto/dictionary-color-combinations.png",
+          "createdAt": "2026-10-29T23:30:50.299Z"
+      },
+      "uzoeorr0ryn5qbbaev2n": {
+          "name": "BROR, Banco da lavoro",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 169,
+          "priority": 3,
+          "note": "Nero",
+          "url": "https://www.ikea.com/it/it/p/bror-banco-da-lavoro-nero-compensato-di-pino-30333286/",
+          "owned": false,
+          "image": "foto/ikea-bror-banco.png",
+          "createdAt": "2026-10-30T12:12:08.150Z"
+      },
+      "wl6vd7i8wfxws7sa7hp0": {
+          "name": "YXSTABY, Sgabello",
+          "brand": "IKEA",
+          "categories": [
+              "s-mvuxg353t5p8"
+          ],
+          "category": "s-mvuxg353t5p8",
+          "price": 35,
+          "priority": 2,
+          "note": "Nero",
+          "url": "https://www.ikea.com/it/it/p/yxstaby-sgabello-a-forma-di-thumbstick-nero-10620009/",
+          "owned": false,
+          "image": "foto/ikea-yxstaby.png",
+          "createdAt": "2026-10-30T12:09:47.516Z"
+      },
+      "x172au5m9xpa8mqx1nyx": {
+          "name": "Giacca antivento Running",
+          "brand": "Kiprun",
+          "categories": [
+              "s-mvu60yx95o3n"
+          ],
+          "category": "s-mvu60yx95o3n",
+          "price": 19.99,
+          "priority": 3,
+          "note": "Taglia M o L.",
+          "url": "https://www.decathlon.it/p/giacca-antivento-running-uomo-run-wind-100-nero/350661/c382m8843362",
+          "owned": false,
+          "image": "foto/kiprun-giacca-antivento.png",
+          "createdAt": "2026-10-29T23:22:16.999Z"
+      }
+  };
+  const SEED_SECTIONS = {
+      "s-mvu5z0vhk60r": {
+          "name": "Libri",
+          "color": "arancio",
+          "createdAt": "2026-10-29T23:17:59.981Z"
+      },
+      "s-mvu602bmiofb": {
+          "name": "Concerti",
+          "color": "azzurro",
+          "createdAt": "2026-10-29T23:18:48.514Z"
+      },
+      "s-mvu60yx95o3n": {
+          "name": "Sport",
+          "color": "rosso",
+          "createdAt": "2026-10-29T23:19:30.765Z"
+      },
+      "s-mvuxg353t5p8": {
+          "name": "Arredo Studio",
+          "color": "giallo",
+          "createdAt": "2026-10-30T12:07:05.703Z"
+      }
+  };
+
+  // fresh: ignora quello che il browser ha salvato e parte sempre dalla lista incorporata (versione pubblica)
+  function localDb(fresh) {
+    const KEYS = { items: 'desiderata:items', sections: 'desiderata:sections' };
+    const load = c => { if (fresh) return null; try { const v = JSON.parse(localStorage.getItem(KEYS[c])); return v && typeof v === 'object' ? v : null; } catch { return null; } };
+    const store = { items: load('items') || JSON.parse(JSON.stringify(SEED)), sections: load('sections') || JSON.parse(JSON.stringify(SEED_SECTIONS)) };
+    const listeners = { items: [], sections: [] };
+    const snap = c => ({ docs: Object.entries(store[c]).map(([id, d]) => ({ id, exists: true, data: () => d })) });
+    const persist = c => {
+      try { localStorage.setItem(KEYS[c], JSON.stringify(store[c])); }
+      catch { store[c] = load(c) || store[c]; throw { code: 'quota_exceeded' }; }
+      const s = snap(c);
+      listeners[c].forEach(fn => fn(s));
+    };
+    const ref = (c, id) => ({
+      async set(d) { store[c][id] = { ...d }; persist(c); },
+      async update(d) { if (!store[c][id]) throw { code: 'invalid_argument' }; store[c][id] = { ...store[c][id], ...d }; persist(c); },
+      async delete() { delete store[c][id]; persist(c); },
+    });
+    return {
+      collection: c => ({
+        doc: id => ref(c, id || 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7)),
+        onSnapshot(fn) { listeners[c].push(fn); setTimeout(() => fn(snap(c))); return () => {}; },
+      }),
+      doc: path => { const [c, id] = path.split('/'); return ref(c, id); },
+    };
+  }
+  const localAssets = {
+    upload: blob => new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve({ id: r.result, url: r.result });
+      r.onerror = () => reject({ code: 'upstream_error' });
+      r.readAsDataURL(blob);
+    }),
+    delete: async () => ({ deleted: false }),
+  };
+
+  /* ---------- avvio ---------- */
+  // La pagina è pronta quando sono arrivati sia gli oggetti sia le sezioni
+  function subscribe() {
+    let gotItems = false, gotSections = false;
+    const ready = () => { if (gotItems && gotSections) { state.phase = 'ready'; render(); } };
+    const fail = () => {
+      state.phase = state.items.length ? 'ready' : 'error';
+      render();
+      if (state.phase === 'ready') toast('La lista non si aggiorna più da sola. Ricarica la pagina.');
+    };
+    state.db.collection('items').onSnapshot(snap => {
+      state.items = snap.docs.filter(d => d.exists).map(norm);
+      gotItems = true;
+      ready();
+    }, fail);
+    state.db.collection('sections').onSnapshot(snap => {
+      state.sections = snap.docs.filter(d => d.exists).map(normSection).sort((a, b) => cmp(a.createdAt, b.createdAt));
+      gotSections = true;
+      if (draft) { renderEdCats(checkedCats()); renderDrop(); }
+      ready();
+    }, fail);
+  }
+
+  async function boot() {
+    render();
+    const C = window.claude;
+    // Versione pubblicata sul web (GitHub Pages): mostra la lista incorporata, solo da guardare
+    if (document.querySelector('meta[name="wishlist-mode"][content="public"]')) {
+      state.public = true;
+      state.db = localDb(true);
+      state.canEdit = false;
+      subscribe();
+      return;
+    }
+    if (!C || typeof C.use !== 'function') {
+      state.local = true;
+      state.db = localDb();
+      state.assets = localAssets;
+      state.canEdit = true;
+      subscribe();
+      return;
+    }
+    const [db, user, assets] = await Promise.all([
+      C.use('db').catch(() => null),
+      C.use('user').catch(() => null),
+      C.use('assets').catch(() => null),
+    ]);
+    if (!db) { state.phase = 'offline'; render(); return; }
+    state.db = db;
+    state.assets = assets;
+    let can = null;
+    try { can = user ? await user.canEdit() : null; } catch {}
+    state.canEdit = can !== false;
+    subscribe();
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
